@@ -9,9 +9,10 @@ env:
   IMAGE_NAME: cli-tools
 
 jobs:
-  push:
+  docker-build-push:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
+    name: Build and push docker image to Github Packages
 
     steps:
       - uses: actions/checkout@v2
@@ -23,10 +24,25 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
       - name: Push image
-        run: |
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+        run: docker push docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
 
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+  slack-notification:
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+    name: Send message to slack channel if docker push completed
 
-          docker push $IMAGE_ID
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Source versions to grab latest version for slack message
+        run: source ./versions
+
+      - name: Send message to Slack API
+        uses: archive/github-actions-slack@v1.0.2
+        with:
+          slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
+          slack-channel: team-cloud
+          slack-text: "cli-tools updated, the latest version is now $DOCKER_TAG. Time for a docker pull team-cloud :bongo:"
+
+      - name: Result from "Send Message"
+        run: echo "The result was ${{ steps.notify.outputs.slack-result }}"
