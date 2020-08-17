@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [ -f versions ]; then
   export $(grep -v '^#' versions | xargs)
 

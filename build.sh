@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 for ARGUMENT in "$@"
 do
   KEY=$(echo $ARGUMENT | cut -f1 -d=)
@@ -22,13 +22,11 @@ else
   docker pull google/cloud-sdk:alpine
 
   docker build . \
-    --tag bulderbank/cloud-cli-tools:latest \
-    --tag bulderbank/cloud-cli-tools:$DOCKER_TAG \
+    --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:latest \
+    --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:$DOCKER_TAG \
     --build-arg VERSION_GCLOUD=google/cloud-sdk:alpine \
     --build-arg VERSION_ALPINE=alpine:latest \
     --build-arg VERSION_KUBECTL=$VERSION_KUBECTL \
     --build-arg VERSION_TERRAFORM=$VERSION_TERRAFORM \
     --build-arg VERSION_HELM=$VERSION_HELM
 fi
-
-docker push bulderbank/cloud-cli-tools
