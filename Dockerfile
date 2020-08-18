@@ -36,10 +36,5 @@ RUN wget https://get.helm.sh/helm-${VERSION_HELM}-linux-amd64.tar.gz \
     && helm plugin install https://github.com/quintush/helm-unittest
 
 # Copy gcloud binaries and libraries to image, and add binaries to path
-COPY --from=gcloud /google-cloud-sdk/lib /usr/lib/google-cloud-sdk/lib
-COPY --from=gcloud /google-cloud-sdk/bin/gcloud /usr/lib/google-cloud-sdk/bin/gcloud
-COPY --from=gcloud /google-cloud-sdk/bin/bootstrapping /usr/lib/google-cloud-sdk/bin/bootstrapping
-COPY --from=gcloud /google-cloud-sdk/platform /usr/lib/google-cloud-sdk/platform
-COPY --from=gcloud /google-cloud-sdk/bin/bq /usr/lib/google-cloud-sdk/bin/bq
-COPY --from=gcloud /google-cloud-sdk/bin/gsutil /usr/lib/google-cloud-sdk/bin/gsutil
+COPY --from=gcloud /google-cloud-sdk /usr/lib/google-cloud-sdk
 ENV PATH="/usr/lib/google-cloud-sdk/bin:${PATH}"
