@@ -34,15 +34,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Source versions to grab latest version for slack message
-        run: source ./versions
+      - name: Grab latest version for slack message
+        run:  echo "::set-env name=DOCKER_TAG::$(cat versions | grep DOCKER_TAG= | head -n 1 | grep -o '".*"' | sed 's/"//g')"
 
       - name: Send message to Slack API
         uses: archive/github-actions-slack@v1.0.2
         with:
           slack-bot-user-oauth-access-token: ${{ secrets.SLACK_BOT_USER_OAUTH_ACCESS_TOKEN }}
           slack-channel: team-cloud
-          slack-text: "cli-tools updated, the latest version is now $DOCKER_TAG. Time for a docker pull team-cloud :bongo:"
+          slack-text: "cli-tools updated, the latest version is now ${{ env.DOCKER_TAG }}. Time for a docker pull team-cloud :bongo:"
 
       - name: Result from "Send Message"
         run: echo "The result was ${{ steps.notify.outputs.slack-result }}"

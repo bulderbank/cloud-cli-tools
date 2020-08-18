@@ -15,7 +15,8 @@ ARG VERSION_HELM
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${VERSION_TERRAFORM}/terraform_${VERSION_TERRAFORM}_linux_amd64.zip"
 
 # Install utility command-line tools
-RUN apk add --update --no-cache curl bash git vim nano python3
+RUN apk add --update --no-cache curl bash git vim nano python3 py3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install kubectl
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${VERSION_KUBECTL}/bin/linux/amd64/kubectl \
@@ -32,8 +33,13 @@ RUN wget -O /tmp/terraform.zip ${TERRAFORM_URL}  \
 RUN wget https://get.helm.sh/helm-${VERSION_HELM}-linux-amd64.tar.gz \
     && tar -xvf helm-${VERSION_HELM}-linux-amd64.tar.gz \
     && mv linux-amd64/helm /usr/local/bin/helm \
-    && rm -rf linux-amd64 \
-    && helm plugin install https://github.com/quintush/helm-unittest
+    && rm -rf linux-amd64 helm-${VERSION_HELM}-linux-amd64.tar.gz \
+    && helm plugin install https://github.com/quintush/helm-unittest \
+    && rm -rf /tmp/*
+
+# Install yamllint
+RUN pip install yamllint \
+    && rm -rf ~/.cache/pip
 
 # Copy gcloud binaries and libraries to image, and add binaries to path
 COPY --from=gcloud /google-cloud-sdk /usr/lib/google-cloud-sdk
