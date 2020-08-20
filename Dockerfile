@@ -41,6 +41,16 @@ RUN wget https://get.helm.sh/helm-${VERSION_HELM}-linux-amd64.tar.gz \
 RUN pip install yamllint \
     && rm -rf ~/.cache/pip
 
+# Install stern for better tailing kubernetes resources
+RUN wget https://github.com/wercker/stern/releases/latest/download/stern_linux_amd64 \
+    && chmod +x ./stern_linux_amd64 \
+    && mv ./stern_linux_amd64 /usr/local/bin/stern
+
 # Copy gcloud binaries and libraries to image, and add binaries to path
 COPY --from=gcloud /google-cloud-sdk /usr/lib/google-cloud-sdk
 ENV PATH="/usr/lib/google-cloud-sdk/bin:${PATH}"
+
+# Create a group and user
+RUN addgroup -g 1000 dockeruser \
+    && adduser -u 1000 -G dockeruser -h /home/clitools -D clitools
+USER clitools
