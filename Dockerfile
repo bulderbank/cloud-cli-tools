@@ -51,6 +51,17 @@ COPY --from=gcloud /google-cloud-sdk /usr/lib/google-cloud-sdk
 ENV PATH="/usr/lib/google-cloud-sdk/bin:${PATH}"
 
 # Create a group and user
-RUN addgroup -g 1000 dockeruser \
-    && adduser -u 1000 -G dockeruser -h /home/clitools -D clitools
-USER clitools
+RUN addgroup -g 1000 docker \
+    && adduser -u 1000 -G docker -h /home/clitools -D docker
+
+# Dirty hacks for dynamically changing UID on runtime
+RUN USER=docker \
+    && GROUP=docker \
+    && curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.5/fixuid-0.5-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - \
+    && chown root:root /usr/local/bin/fixuid \
+    && chmod 4755 /usr/local/bin/fixuid \
+    && mkdir -p /etc/fixuid \
+    && printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
+
+USER docker:docker
+ENTRYPOINT ["fixuid", "-q"]
