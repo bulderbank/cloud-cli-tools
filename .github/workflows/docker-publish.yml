@@ -1,8 +1,9 @@
 name: Docker
 
 on:
-  release:
-    types: [released]
+  push:
+    tags:
+      - 'v*.*.*'
 
 env:
   IMAGE_NAME: cli-tools
