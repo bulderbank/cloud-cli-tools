@@ -12,6 +12,7 @@ FROM $VERSION_ALPINE
 ARG VERSION_KUBECTL
 ARG VERSION_TERRAFORM
 ARG VERSION_HELM
+ARG VERSION_CIRCLECICLI
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${VERSION_TERRAFORM}/terraform_${VERSION_TERRAFORM}_linux_amd64.zip"
 
 # Install utility command-line tools
@@ -43,6 +44,12 @@ RUN pip install yamllint \
 RUN wget https://github.com/wercker/stern/releases/latest/download/stern_linux_amd64 \
     && chmod +x ./stern_linux_amd64 \
     && mv ./stern_linux_amd64 /usr/local/bin/stern
+
+# Install circleci cli tool for creating and testing orbs
+RUN wget https://github.com/CircleCI-Public/circleci-cli/releases/download/v${VERSION_CIRCLECICLI}/circleci-cli_${VERSION_CIRCLECICLI}_linux_amd64.tar.gz \
+    && tar -xvf circleci-cli_${VERSION_CIRCLECICLI}_linux_amd64.tar.gz \
+    && mv ./circleci-cli_${VERSION_CIRCLECICLI}_linux_amd64/circleci /usr/local/bin/circleci \
+    && rm -rf ./circleci-cli_${VERSION_CIRCLECICLI}_linux_amd64
 
 # Copy gcloud binaries and libraries to image, and add binaries to path
 COPY --from=gcloud /google-cloud-sdk /usr/lib/google-cloud-sdk
