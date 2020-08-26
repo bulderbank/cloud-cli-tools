@@ -29,13 +29,11 @@ RUN wget -O /tmp/terraform.zip ${TERRAFORM_URL}  \
     && unzip /tmp/terraform.zip -d /bin \
     && rm -rf /tmp/terraform.zip /var/cache/apk/*
 
-# Install Helm and install latest unittest plugin
+# Install Helm
 RUN wget https://get.helm.sh/helm-${VERSION_HELM}-linux-amd64.tar.gz \
     && tar -xvf helm-${VERSION_HELM}-linux-amd64.tar.gz \
     && mv linux-amd64/helm /usr/local/bin/helm \
-    && rm -rf linux-amd64 helm-${VERSION_HELM}-linux-amd64.tar.gz \
-    && helm plugin install https://github.com/quintush/helm-unittest \
-    && rm -rf /tmp/*
+    && rm -rf linux-amd64 helm-${VERSION_HELM}-linux-amd64.tar.gz
 
 # Install yamllint
 RUN pip install yamllint \
@@ -63,5 +61,11 @@ RUN USER=docker \
     && mkdir -p /etc/fixuid \
     && printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
 
+# Set the default user to run commands
 USER docker:docker
+
+# Install latest unittest Helm plugin as user
+RUN helm plugin install https://github.com/quintush/helm-unittest \
+    && rm -rf /tmp/*
+
 ENTRYPOINT ["fixuid", "-q"]
