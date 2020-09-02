@@ -10,6 +10,7 @@ do
     VERSION_KUBECTL)    VERSION_KUBECTL=${VALUE} ;;
     VERSION_TERRAFORM)  VERSION_TERRAFORM=${VALUE} ;;
     VERSION_CIRCLECICLI)  VERSION_CIRCLECICLI=${VALUE} ;;
+    VERSION_GITHUBCLI)  VERSION_GITHUBCLI=${VALUE} ;;
     *)
   esac
 done
@@ -26,9 +27,11 @@ else
     --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:latest \
     --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:$DOCKER_TAG \
     --build-arg VERSION_GCLOUD=google/cloud-sdk:alpine \
+    --build-arg VERSION_GOLANG=golang:alpine \
     --build-arg VERSION_ALPINE=alpine:latest \
     --build-arg VERSION_HELM=$VERSION_HELM \
     --build-arg VERSION_KUBECTL=$VERSION_KUBECTL \
     --build-arg VERSION_TERRAFORM=$VERSION_TERRAFORM \
-    --build-arg VERSION_CIRCLECICLI=$VERSION_CIRCLECICLI
+    --build-arg VERSION_CIRCLECICLI=$VERSION_CIRCLECICLI \
+    --build-arg VERSION_GITHUBCLI=$VERSION_GITHUBCLI
 fi
