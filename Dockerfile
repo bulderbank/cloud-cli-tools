@@ -83,4 +83,17 @@ ENV PATH="/home/clitools/.krew/bin:${PATH}"
 RUN helm plugin install https://github.com/quintush/helm-unittest \
     && rm -rf /tmp/*
 
+# Install kubectl plugins with Krew
+RUN kubectl krew update \
+    && kubectl krew install cert-manager \
+    && kubectl krew install deprecations \
+    && kubectl krew install neat \
+    && kubectl krew install np-viewer \
+    && kubectl krew install popeye \
+    && kubectl krew install prompt \
+    && kubectl krew install resource-capacity \
+    && kubectl krew install rolesum \
+    && kubectl krew install score \
+    && kubectl krew install tree
+
 ENTRYPOINT ["fixuid", "-q"]
