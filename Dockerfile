@@ -1,6 +1,22 @@
 # Base images must be defined in to to be used with FROM
 ARG VERSION_GCLOUD
+ARG VERSION_GOLANG
 ARG VERSION_ALPINE
+
+# as github cli does not have a working alpine binary, we need to create one ourself
+FROM $VERSION_GOLANG AS ghcli
+ARG VERSION_GITHUBCLI
+
+WORKDIR /app
+RUN mkdir -p /app
+
+RUN apk add --update --no-cache git build-base
+
+RUN git clone https://github.com/cli/cli.git gh-cli \
+    && cd gh-cli \
+    && git checkout tags/v${VERSION_GITHUBCLI} -b ${VERSION_GITHUBCLI} \
+    && make bin/gh \
+    && chmod +x ./bin/gh
 
 # google/gcloud image that we will copy binaries from
 FROM $VERSION_GCLOUD AS gcloud
@@ -52,6 +68,7 @@ RUN wget https://github.com/CircleCI-Public/circleci-cli/releases/download/v${VE
     && rm -rf ./circleci-cli_${VERSION_CIRCLECICLI}_linux_amd64
 
 # Copy gcloud binaries and libraries to image, and add binaries to path
+COPY --from=ghcli /app/gh-cli/bin/gh /usr/local/bin/gh
 COPY --from=gcloud /google-cloud-sdk /usr/lib/google-cloud-sdk
 ENV PATH="/usr/lib/google-cloud-sdk/bin:${PATH}"
 
