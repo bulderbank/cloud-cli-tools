@@ -75,11 +75,32 @@ RUN USER=docker \
     && mkdir -p /etc/fixuid \
     && printf "user: $USER\ngroup: $GROUP\n" > /etc/fixuid/config.yml
 
-# Set the default user to run commands
+# Set the default user to run commands, everything RUN after this line will be as normal user!
 USER docker:docker
+
+# Install Krew kubectl plugin manager
+RUN cd $HOME && mkdir tmp-krew && cd ./tmp-krew \
+    && wget https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz \
+    && tar zxvf krew.tar.gz \
+    && ./krew-linux_amd64 install krew \
+    && cd ../ && rm -rf tmp-krew
+ENV PATH="/home/clitools/.krew/bin:${PATH}"
 
 # Install latest unittest Helm plugin as user
 RUN helm plugin install https://github.com/quintush/helm-unittest \
     && rm -rf /tmp/*
+
+# Install kubectl plugins with Krew
+RUN kubectl krew update \
+    && kubectl krew install cert-manager \
+    && kubectl krew install deprecations \
+    && kubectl krew install neat \
+    && kubectl krew install np-viewer \
+    && kubectl krew install popeye \
+    && kubectl krew install prompt \
+    && kubectl krew install resource-capacity \
+    && kubectl krew install rolesum \
+    && kubectl krew install score \
+    && kubectl krew install tree
 
 ENTRYPOINT ["fixuid", "-q"]
