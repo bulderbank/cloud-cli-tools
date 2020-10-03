@@ -11,9 +11,11 @@ FROM $VERSION_ALPINE
 
 ARG VERSION_KUBECTL
 ARG VERSION_TERRAFORM
+ARG VERSION_TERRAGRUNT
 ARG VERSION_HELM
 ARG VERSION_CIRCLECICLI
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${VERSION_TERRAFORM}/terraform_${VERSION_TERRAFORM}_linux_amd64.zip"
+ENV TERRAGRUNT_URL="https://github.com/gruntwork-io/terragrunt/releases/download/${VERSION_TERRAGRUNT}/terragrunt_linux_amd64"
 
 # Install utility command-line tools
 RUN apk add --update --no-cache curl bash git vim nano python3 py3-pip \
@@ -29,6 +31,11 @@ RUN echo ${TERRAFORM_URL}
 RUN wget -O /tmp/terraform.zip ${TERRAFORM_URL}  \
     && unzip /tmp/terraform.zip -d /bin \
     && rm -rf /tmp/terraform.zip /var/cache/apk/*
+
+# Install Terragrunt
+RUN echo ${TERRAFORM_URL}
+RUN wget -O /usr/local/bin/terragrunt ${TERRAGRUNT_URL} &&
+    chmod +x /usr/local/bin/terragrunt
 
 # Install Helm
 RUN wget https://get.helm.sh/helm-${VERSION_HELM}-linux-amd64.tar.gz \
