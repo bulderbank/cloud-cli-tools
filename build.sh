@@ -15,14 +15,23 @@ do
   esac
 done
 
-if [[ -z $DOCKER_TAG ]] || [[ -z $VERSION_KUBECTL ]] || [[ -z $VERSION_TERRAFORM ]] || [[ -z $VERSION_HELM ]] || [[ -z $VERSION_CIRCLECICLI ]]
+export $(grep -v '^#' versions | xargs)
+if 
+    [[ -z $VERSION_KUBECTL ]] ||
+    [[ -z $VERSION_TERRAFORM ]] ||
+    [[ -z $VERSION_TERRAGRUNT ]] ||
+    [[ -z $VERSION_HELM ]] ||
+    [[ -z $VERSION_CIRCLECICLI ]]
 then
   echo "Error: Build missing version arguments!"
   exit 2
 else
+  if [[ -z $DOCKER_TAG ]]; then
+    DOCKER_TAG=local
+  fi
+
   docker pull alpine:latest
   docker pull google/cloud-sdk:alpine
-
   docker build . \
     --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:latest \
     --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:$DOCKER_TAG \
