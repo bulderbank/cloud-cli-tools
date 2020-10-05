@@ -15,7 +15,6 @@ ARG VERSION_TERRAGRUNT
 ARG VERSION_HELM
 ARG VERSION_CIRCLECICLI
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${VERSION_TERRAFORM}/terraform_${VERSION_TERRAFORM}_linux_amd64.zip"
-ENV TERRAGRUNT_URL="https://github.com/gruntwork-io/terragrunt/releases/download/${VERSION_TERRAGRUNT}/terragrunt_linux_amd64"
 
 # Install utility command-line tools
 RUN apk add --update --no-cache curl bash git vim nano python3 py3-pip \
