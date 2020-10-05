@@ -25,15 +25,15 @@ then
   exit 2
 else
   if [[ -z $DOCKER_TAG ]]; then
-    TAGS="--tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:local"
+    DOCKER_TAGS="--tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:local"
   else
-    TAGS="--tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:latest --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:$DOCKER_TAG"
+    DOCKER_TAGS="--tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:latest --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:$DOCKER_TAG"
   fi
 
   docker pull alpine:latest
   docker pull google/cloud-sdk:alpine
   docker build . \
-    $TAGS \
+    $DOCKER_TAGS \
     --build-arg VERSION_GCLOUD=google/cloud-sdk:alpine \
     --build-arg VERSION_ALPINE=alpine:latest \
     --build-arg VERSION_HELM=$VERSION_HELM \
@@ -41,3 +41,4 @@ else
     --build-arg VERSION_TERRAFORM=$VERSION_TERRAFORM \
     --build-arg VERSION_CIRCLECICLI=$VERSION_CIRCLECICLI
 fi
+
