@@ -25,7 +25,6 @@ then
   exit 2
 else
   if [[ -z $DOCKER_TAG ]]; then
-    # We don't want the `latest` tag when building locally
     TAGS="--tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:local"
   else
     TAGS="--tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:latest --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:$DOCKER_TAG"
