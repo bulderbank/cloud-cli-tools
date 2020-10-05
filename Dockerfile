@@ -30,11 +30,6 @@ RUN wget -O /tmp/terraform.zip ${TERRAFORM_URL}  \
     && unzip /tmp/terraform.zip -d /bin \
     && rm -rf /tmp/terraform.zip /var/cache/apk/*
 
-# Install Terragrunt
-RUN echo ${TERRAFORM_URL}
-RUN wget -O /usr/local/bin/terragrunt ${TERRAGRUNT_URL} && \
-    chmod +x /usr/local/bin/terragrunt
-
 # Install Helm
 RUN wget https://get.helm.sh/helm-${VERSION_HELM}-linux-amd64.tar.gz \
     && tar -xvf helm-${VERSION_HELM}-linux-amd64.tar.gz \
