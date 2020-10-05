@@ -34,7 +34,7 @@ RUN wget -O /tmp/terraform.zip ${TERRAFORM_URL}  \
 
 # Install Terragrunt
 RUN echo ${TERRAFORM_URL}
-RUN wget -O /usr/local/bin/terragrunt ${TERRAGRUNT_URL} &&
+RUN wget -O /usr/local/bin/terragrunt ${TERRAGRUNT_URL} && \
     chmod +x /usr/local/bin/terragrunt
 
 # Install Helm
