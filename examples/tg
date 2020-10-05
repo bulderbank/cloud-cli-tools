@@ -1,0 +1,25 @@
+#!/usr/bin/zsh
+
+# Run Terraform commands with docker
+
+function tg() {
+
+if [[ -z "$DOCKER_RAND_ID" ]]; then
+  DOCKER_RAND_ID=$RANDOM
+fi
+
+if [[ -z "$CLI_TOOLS_VERSION" ]]; then
+  CLI_TOOLS_VERSION=latest
+fi
+
+docker run --ulimit memlock=-1 --name "$DOCKER_RAND_ID" -it --rm \
+  -u 1000:1000 \
+  -v /tmp:/tmp \
+  -v $(pwd):$(pwd) \
+  -w $(pwd) \
+  -e GOOGLE_CREDENTIALS=$GOOGLE_CREDENTIALS \
+  -e GOOGLE_ENCRYPTION_KEY=$GOOGLE_ENCRYPTION_KEY \
+  -e GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS \
+  docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:"$CLI_TOOLS_VERSION" terragrunt $argv[*]
+}
+
