@@ -9,7 +9,6 @@ do
     VERSION_HELM)         VERSION_HELM=${VALUE} ;;
     VERSION_KUBECTL)      VERSION_KUBECTL=${VALUE} ;;
     VERSION_TERRAFORM)    VERSION_TERRAFORM=${VALUE} ;;
-    VERSION_TERRAGRUNT)   VERSION_TERRAGRUNT=${VALUE} ;;
     VERSION_CIRCLECICLI)  VERSION_CIRCLECICLI=${VALUE} ;;
     *)
   esac
@@ -19,7 +18,6 @@ export $(grep -v '^#' versions | xargs)
 if 
     [[ -z $VERSION_KUBECTL ]] ||
     [[ -z $VERSION_TERRAFORM ]] ||
-    [[ -z $VERSION_TERRAGRUNT ]] ||
     [[ -z $VERSION_HELM ]] ||
     [[ -z $VERSION_CIRCLECICLI ]]
 then
@@ -27,6 +25,7 @@ then
   exit 2
 else
   if [[ -z $DOCKER_TAG ]]; then
+    # We don't want the `latest` tag when building locally
     TAGS="--tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:local"
   else
     TAGS="--tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:latest --tag docker.pkg.github.com/bulderbank/cloud-cli-tools/cli-tools:$DOCKER_TAG"
@@ -41,6 +40,5 @@ else
     --build-arg VERSION_HELM=$VERSION_HELM \
     --build-arg VERSION_KUBECTL=$VERSION_KUBECTL \
     --build-arg VERSION_TERRAFORM=$VERSION_TERRAFORM \
-    --build-arg VERSION_TERRAGRUNT=$VERSION_TERRAGRUNT \
     --build-arg VERSION_CIRCLECICLI=$VERSION_CIRCLECICLI
 fi
