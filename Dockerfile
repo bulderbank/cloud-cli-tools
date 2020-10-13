@@ -16,7 +16,7 @@ ARG VERSION_CIRCLECICLI
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${VERSION_TERRAFORM}/terraform_${VERSION_TERRAFORM}_linux_amd64.zip"
 
 # Install utility command-line tools
-RUN apk add --update --no-cache curl bash git vim nano python3 py3-pip \
+RUN apk add --update --no-cache curl bash git vim nano python3 py3-pip openssh \
     && rm -rf /var/lib/apt/lists/*
 
 # Install kubectl
