@@ -10,6 +10,7 @@ RUN gcloud components install beta bq gsutil
 FROM $VERSION_ALPINE
 
 ARG VERSION_KUBECTL
+ARG VERSION_KUSTOMIZE
 ARG VERSION_TERRAFORM
 ARG VERSION_TERRAGRUNT
 ARG VERSION_HELM
@@ -25,6 +26,10 @@ RUN apk add --update --no-cache curl bash git vim nano python3 py3-pip openssh \
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${VERSION_KUBECTL}/bin/linux/amd64/kubectl \
     && chmod +x ./kubectl \
     && mv ./kubectl /usr/local/bin/kubectl
+
+# Install kustomize
+RUN curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/v${VERSION_KUSTOMIZE}/kustomize_${VERSION_KUSTOMIZE}_linux_amd64  -o /usr/bin/kustomize \
+    && chmod +x /usr/bin/kustomize
 
 # Install Terraform
 RUN echo ${TERRAFORM_URL}
