@@ -15,7 +15,7 @@ fi
 docker run --ulimit memlock=-1 --name "$DOCKER_RAND_ID" -it --rm \
   -u 1000:1000 \
   -v /tmp:/tmp \
-  -v /home/$USER:/home/$USER \
+  -v $HOME:$HOME \
   -w $(pwd) \
   -e GOOGLE_CREDENTIALS=$GOOGLE_CREDENTIALS \
   -e GOOGLE_ENCRYPTION_KEY=$GOOGLE_ENCRYPTION_KEY \

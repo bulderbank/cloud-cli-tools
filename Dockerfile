@@ -10,12 +10,14 @@ RUN gcloud components install beta bq gsutil
 FROM $VERSION_ALPINE
 
 ARG VERSION_KUBECTL
+ARG VERSION_KUSTOMIZE
 ARG VERSION_TERRAFORM
 ARG VERSION_TERRAGRUNT
 ARG VERSION_HELM
 ARG VERSION_CIRCLECICLI
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${VERSION_TERRAFORM}/terraform_${VERSION_TERRAFORM}_linux_amd64.zip"
 ENV TERRAGRUNT_URL="https://github.com/gruntwork-io/terragrunt/releases/download/${VERSION_TERRAGRUNT}/terragrunt_linux_amd64"
+ENV KUSTOMIZE_URL="https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/${VERSION_KUSTOMIZE}/kustomize_${VERSION_KUSTOMIZE}_linux_amd64.tar.gz"
 
 # Install utility command-line tools
 RUN apk add --update --no-cache curl bash git vim nano python3 py3-pip openssh \
@@ -25,6 +27,13 @@ RUN apk add --update --no-cache curl bash git vim nano python3 py3-pip openssh \
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${VERSION_KUBECTL}/bin/linux/amd64/kubectl \
     && chmod +x ./kubectl \
     && mv ./kubectl /usr/local/bin/kubectl
+
+# Install kustomize
+RUN wget -O /tmp/kustomize.tar.gz ${KUSTOMIZE_URL} \
+  && tar -C /usr/local/bin/ -xzvf /tmp/kustomize.tar.gz \
+  && chmod +x /usr/local/bin/kustomize \
+  && rm /tmp/kustomize.tar.gz
+
 
 # Install Terraform
 RUN echo ${TERRAFORM_URL}
